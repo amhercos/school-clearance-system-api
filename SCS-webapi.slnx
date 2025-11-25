@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="Core/scs.Application/Scs.Application.csproj" />
+    <Project Path="Core/scs.Core/Scs.Core.csproj" />
+    <Project Path="Core/scs.Domain/Scs.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/" />
+  <Folder Name="/Presentation/">
+    <Project Path="Presentation/SCS.WebAPI/SCS.WebAPI.csproj" />
+  </Folder>
+</Solution>
