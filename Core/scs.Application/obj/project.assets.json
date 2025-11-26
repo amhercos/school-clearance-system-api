@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net10.0": {}
+    "net10.0": {
+      "Scs.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/Scs.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Scs.Domain.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "Scs.Domain/1.0.0": {
+      "type": "project",
+      "path": "../scs.Domain/Scs.Domain.csproj",
+      "msbuildProject": "../scs.Domain/Scs.Domain.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0": []
+    "net10.0": [
+      "Scs.Domain >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\amher\\.nuget\\packages\\": {},
@@ -14,9 +33,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Application\\scs.Application.csproj",
-      "projectName": "scs.Application",
-      "projectPath": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Application\\scs.Application.csproj",
+      "projectUniqueName": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Application\\Scs.Application.csproj",
+      "projectName": "Scs.Application",
+      "projectPath": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Application\\Scs.Application.csproj",
       "packagesPath": "C:\\Users\\amher\\.nuget\\packages\\",
       "outputPath": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Application\\obj\\",
       "projectStyle": "PackageReference",
@@ -38,7 +57,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Working Directory\\SCS-webapi\\Core\\scs.Domain\\Scs.Domain.csproj": {
+              "projectPath": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Domain\\Scs.Domain.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

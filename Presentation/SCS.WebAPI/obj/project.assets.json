@@ -36,6 +36,29 @@
             "related": ".pdb;.xml"
           }
         }
+      },
+      "Scs.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "Scs.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Scs.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Scs.Application.dll": {}
+        }
+      },
+      "Scs.Domain/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/Scs.Domain.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Scs.Domain.dll": {}
+        }
       }
     }
   },
@@ -75,11 +98,22 @@
         "microsoft.openapi.2.0.0.nupkg.sha512",
         "microsoft.openapi.nuspec"
       ]
+    },
+    "Scs.Application/1.0.0": {
+      "type": "project",
+      "path": "../../Core/scs.Application/Scs.Application.csproj",
+      "msbuildProject": "../../Core/scs.Application/Scs.Application.csproj"
+    },
+    "Scs.Domain/1.0.0": {
+      "type": "project",
+      "path": "../../Core/scs.Domain/Scs.Domain.csproj",
+      "msbuildProject": "../../Core/scs.Domain/Scs.Domain.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net10.0": [
-      "Microsoft.AspNetCore.OpenApi >= 10.0.0"
+      "Microsoft.AspNetCore.OpenApi >= 10.0.0",
+      "Scs.Application >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -113,7 +147,11 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Working Directory\\SCS-webapi\\Core\\scs.Application\\Scs.Application.csproj": {
+              "projectPath": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Application\\Scs.Application.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
