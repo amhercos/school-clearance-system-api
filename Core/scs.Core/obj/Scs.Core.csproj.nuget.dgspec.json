@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Working Directory\\SCS-webapi\\Core\\scs.Core\\Scs.Core.csproj": {}
+    "C:\\Working Directory\\school-clearance-system-api\\Core\\scs.Core\\Scs.Core.csproj": {}
   },
   "projects": {
-    "C:\\Working Directory\\SCS-webapi\\Core\\scs.Core\\Scs.Core.csproj": {
+    "C:\\Working Directory\\school-clearance-system-api\\Core\\scs.Core\\Scs.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Core\\Scs.Core.csproj",
+        "projectUniqueName": "C:\\Working Directory\\school-clearance-system-api\\Core\\scs.Core\\Scs.Core.csproj",
         "projectName": "Scs.Core",
-        "projectPath": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Core\\Scs.Core.csproj",
+        "projectPath": "C:\\Working Directory\\school-clearance-system-api\\Core\\scs.Core\\Scs.Core.csproj",
         "packagesPath": "C:\\Users\\amher\\.nuget\\packages\\",
-        "outputPath": "C:\\Working Directory\\SCS-webapi\\Core\\scs.Core\\obj\\",
+        "outputPath": "C:\\Working Directory\\school-clearance-system-api\\Core\\scs.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
