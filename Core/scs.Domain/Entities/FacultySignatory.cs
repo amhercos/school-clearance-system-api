@@ -8,7 +8,8 @@ namespace Scs.Domain.Entities
 {
     public class FacultySignatory : User
     {
-        public string Department { get; set; }
+        public int DepartmentId { get; set; }
+        public Department Department { get; set; }
         public string ClearanceRole { get; set; }
 
     }

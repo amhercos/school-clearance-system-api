@@ -11,5 +11,10 @@ namespace Scs.Domain.Entities
         public string? StudentNumber { get; set; }
         public string? Course { get; set; }
         public string? YearLevel { get; set; }
+        public int ? DepartmentId { get; set; }
+        public Department? Department { get; set; }
+
+
+        public virtual ICollection<ClearanceForm> ClearanceForms { get; set; } = new HashSet<ClearanceForm>();
     }
 }

@@ -12,7 +12,7 @@ namespace Scs.Domain.Entities
     {
         public int FormId { get; set; }
         public int StudentId { get; set; }
-        public virtual Student Student { get; set; }
+        public Student Student { get; set; }
         public DateOnly DateRqeuested { get; set; }
         public ClearanceFormStatus Status { get; set; }
         public virtual ICollection<ClearanceSignature> Signatures { get; set; } = new HashSet<ClearanceSignature>();
