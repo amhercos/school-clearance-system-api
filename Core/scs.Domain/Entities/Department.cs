@@ -4,9 +4,11 @@ using System.Text;
 
 namespace Scs.Domain.Entities
 {
-    public class Department
+    public class Department : BaseEntity
     {
-        public int Id { get; set; }
-        public string DepartmentName { get; set; }
+        public string Name { get; set; } // e.g., "Library", "Cashier", "Office of Student Affairs"
+        public string Description { get; set; }
+
+        public ICollection<Faculty> Faculties { get; set; }
     }
 }

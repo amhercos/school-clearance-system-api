@@ -10,9 +10,10 @@ namespace Scs.Infrastructure.Persistence
     {
         DbSet<User> Users { get; }
         DbSet<Student> Students { get; }
-        DbSet<FacultySignatory> FacultySignatories { get; }
+        DbSet<Faculty> Faculties { get; }
         DbSet<ClearanceForm> ClearanceForms { get; }
         DbSet<ClearanceSignature> ClearanceSignatures { get; }
+        DbSet<Department> Departments { get; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
