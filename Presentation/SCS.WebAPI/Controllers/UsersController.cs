@@ -1,34 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Scs.Application.DTOs;
-using Scs.Application.Services;
+using Scs.Application.Features.Users.Commands;
+using Scs.Application.Features.Users.Queries;
+using Scs.Domain.Entities;
 
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly IMediator _mediator;
 
-    public UsersController(IUserService userService)
+    public UsersController(IMediator mediator) // Dependency Injection of IMediator
     {
-        _userService = userService;
+        _mediator = mediator;
     }
 
-    // GET /api/users
-    [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
-    {
-        var users = await _userService.GetAllUsersAsync();
-        return Ok(users);
-    }
-
-    // GET /api/users/5
+    // GET /api/users/5 (Query)
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<UserDto>> GetById(int id)
     {
-        var user = await _userService.GetUserByIdAsync(id);
+        // Sends the query to the MediatR pipeline
+        var user = await _mediator.Send(new GetUserByIdQuery(id));
 
         if (user == null)
         {
@@ -36,5 +29,16 @@ public class UsersController : ControllerBase
         }
 
         return Ok(user);
+    }
+
+    // POST /api/users (Command)
+    [HttpPost]
+    public async Task<ActionResult<User>> Create([FromBody] CreateUserCommand command)
+    {
+        // Sends the command to the MediatR pipeline
+        var user = await _mediator.Send(command);
+
+        // Return 201 Created status
+        return CreatedAtAction(nameof(GetById), new { id = user.UserId }, user);
     }
 }

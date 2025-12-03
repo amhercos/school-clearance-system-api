@@ -7,11 +7,22 @@ using System.Threading.Tasks;
 
 namespace Scs.Domain.Entities
 {
-    public class ClearanceSignature
+    public class ClearanceSignature : BaseEntity
     {
-        public int SignatureId { get; set; }
-        public int SignatoryId { get; set; }
-        public SignatureStatus SignatureStatus { get; set; }
-        public DateOnly DateSigned { get; set; }
+        public Guid ClearanceFormId { get; set; }
+        public ClearanceForm ClearanceForm { get; set; }
+
+        // the department responsible for signing
+        public Guid DepartmentId { get; set; }
+        public Department Department { get; set; }
+
+        // Status sa specific signature
+        public ClearanceFormStatus Status { get; set; }
+        public string? Remarks { get; set; }         
+        public DateTime? DateActioned { get; set; }
+
+        // for the assigned signer
+        public Guid? SignedByFacultyId { get; set; }
+        public Faculty? SignedByFaculty { get; set; }
     }
 }

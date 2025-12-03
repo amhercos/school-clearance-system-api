@@ -1,5 +1,5 @@
 ﻿using Scs.Application.DTOs;
-using Scs.Domain.Interfaces;
+using Scs.Application.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,15 +19,15 @@ namespace Scs.Application.Services
         {
             var users = await _userRepository.GetAllAsync();
 
-            // Map Domain Entities to DTOs using LINQ
+           
             return users.Select(u => new UserDto(u.UserId, u.FirstName, u.LastName, u.Email));
         }
 
         public async Task<UserDto?> GetUserByIdAsync(int userId)
         {
-            var user = await _userRepository.GetByIdAsync(userId);
+            var user = await _userRepository.GetUserByIdAsync(userId);
 
-            // Map if user is found, otherwise return null
+           
             return user != null
                 ? new UserDto(user.UserId, user.FirstName, user.LastName, user.Email)
                 : null;

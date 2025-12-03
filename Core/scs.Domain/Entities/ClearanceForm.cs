@@ -8,13 +8,23 @@ using System.Threading.Tasks;
 
 namespace Scs.Domain.Entities
 {
-    public class ClearanceForm
+    public class ClearanceForm : BaseEntity
     {
-        public int FormId { get; set; }
-        public int StudentId { get; set; }
-        public virtual Student Student { get; set; }
-        public DateOnly DateRqeuested { get; set; }
-        public ClearanceFormStatus Status { get; set; }
-        public virtual ICollection<ClearanceSignature> Signatures { get; set; } = new HashSet<ClearanceSignature>();
+        public Guid StudentId { get; set; }
+        public Student Student { get; set; }
+
+        public string AcademicYear { get; set; }
+        public string Semester { get; set; }
+
+        // Overall status of the whole form
+        public ClearanceFormStatus OverallStatus { get; set; }
+        public DateTime? DateCompleted { get; set; }
+
+        public bool IsActive { get; set; }       
+        public bool IsCompleted { get; set; }  
+
+        // The list of signatures required
+        public ICollection<ClearanceSignature> ClearanceSignatures { get; set; } = new HashSet<ClearanceSignature>();   
+
     }
 }
