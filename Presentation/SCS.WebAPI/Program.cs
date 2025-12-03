@@ -1,32 +1,28 @@
+using Microsoft.AspNetCore.Builder;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-
+// Add services to the container
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+// .NET 10 built-in OpenAPI services
 builder.Services.AddOpenApi();
 
-if (app.Environment.IsDevelopment())
-{
-    // Add OpenAPI 3.0 document serving middleware
-    // Available at: http://localhost:<port>/swagger/v1/swagger.json
-    app.UseOpenApi();
+// MediatR services
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssembly(typeof(Scs.Application.DependencyInjection).Assembly)
+);
 
-    // Add web UIs to interact with the document
-    // Available at: http://localhost:<port>/swagger
-    app.UseSwaggerUi(); // UseSwaggerUI Protected by if (env.IsDevelopment())
-}
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Development-only API documentation and UI
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi();        // Maps /openapi/{documentName}.json
+    //app.UseOpenApi();        // Serves OpenAPI spec
+    //app.UseSwaggerUi();      // Serves Swagger UI
 }
 
-
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Scs.Application.DependencyInjection).Assembly));
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
