@@ -20,7 +20,11 @@ namespace Scs.Domain.Entities
         public ClearanceFormStatus OverallStatus { get; set; }
         public DateTime? DateCompleted { get; set; }
 
+        public bool IsActive { get; set; }       
+        public bool IsCompleted { get; set; }  
+
         // The list of signatures required
-        public ICollection<ClearanceSignature> ClearanceSignatures { get; set; }
+        public ICollection<ClearanceSignature> ClearanceSignatures { get; set; } = new HashSet<ClearanceSignature>();   
+
     }
 }

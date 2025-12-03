@@ -20,6 +20,6 @@ namespace Scs.Domain.Entities
         public int YearLevel { get; set; }
 
         // Navigation Property
-        public ClearanceForm ClearanceForm { get; set; }
+       public ICollection<ClearanceForm> ClearanceForms { get; set; } = new HashSet<ClearanceForm>();
     }
 }

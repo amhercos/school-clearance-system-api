@@ -19,9 +19,9 @@ namespace Scs.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(s => s.StudentNumber).IsUnique();
 
-            builder.HasOne(s => s.ClearanceForm)
+            builder.HasMany(s => s.ClearanceForms)
                 .WithOne(c => c.Student)
-                .HasForeignKey<ClearanceForm>(c => c.StudentId)
+                .HasForeignKey(c => c.StudentId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

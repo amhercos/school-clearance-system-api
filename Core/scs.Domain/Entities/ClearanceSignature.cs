@@ -12,16 +12,17 @@ namespace Scs.Domain.Entities
         public Guid ClearanceFormId { get; set; }
         public ClearanceForm ClearanceForm { get; set; }
 
-        // Which department needs to sign this?
+        // the department responsible for signing
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
 
-        // Status of this specific signature
-        public ClearanceFormStatus Status { get; set; } // Pending, Approved, Rejected
-        public string Remarks { get; set; }         
+        // Status sa specific signature
+        public ClearanceFormStatus Status { get; set; }
+        public string? Remarks { get; set; }         
         public DateTime? DateActioned { get; set; }
 
+        // for the assigned signer
         public Guid? SignedByFacultyId { get; set; }
-        public Faculty SignedByFaculty { get; set; }
+        public Faculty? SignedByFaculty { get; set; }
     }
 }
