@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Scs.Application
@@ -9,8 +10,8 @@ namespace Scs.Application
     { 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-            // Register application services here
-            //services.AddScoped<IUserService, UserService>();
+            services.AddMediatR(cfg =>
+                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
             return services;
         }
     }

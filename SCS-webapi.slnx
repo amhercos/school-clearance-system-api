@@ -6,6 +6,9 @@
   <Folder Name="/Infrastructure/">
     <Project Path="Infrastructure/Scs.Infrastructure/Scs.Infrastructure.csproj" Id="3650c9ef-db70-464e-a0e9-4a549b20c2c8" />
   </Folder>
+  <Folder Name="/Infrastructure/DbMigrations/">
+    <Project Path="Infrastructure/DbMigrations/Scs.DbMigration.PostgreSQL/Scs.DbMigration.PostgreSQL.csproj" Id="ff260b48-0ffa-45e2-87cb-c83b7a9ec7ba" />
+  </Folder>
   <Folder Name="/Presentation/">
     <Project Path="Presentation/SCS.WebAPI/SCS.WebAPI.csproj" />
   </Folder>

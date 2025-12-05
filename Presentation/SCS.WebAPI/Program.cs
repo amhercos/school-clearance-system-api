@@ -1,27 +1,60 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.OpenApi;
+using Scs.Application;
+using Scs.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// --- 1. Service Registration ---
+
 builder.Services.AddControllers();
 
-// .NET 10 built-in OpenAPI services
-builder.Services.AddOpenApi();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyOrigin() 
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
-// MediatR services
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(typeof(Scs.Application.DependencyInjection).Assembly)
-);
+// A. Add Infrastructure (Database, Repos)
+// We pass configuration so Infrastructure can read the ConnectionString
+builder.Services.AddInfrastructureServices(builder.Configuration);
+
+// B. Add Application (MediatR, Validators, etc.)
+builder.Services.AddApplicationServices();
+
+// C. Swagger Config
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "SCS Clearance System API",
+        Version = "v1"
+    });
+});
 
 var app = builder.Build();
 
-// Development-only API documentation and UI
+// --- 2. Request Pipeline ---
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();        // Maps /openapi/{documentName}.json
-    //app.UseOpenApi();        // Serves OpenAPI spec
-    //app.UseSwaggerUi();      // Serves Swagger UI
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "SCS API V1");
+    });
 }
+else
+{
+    // Optional: Keep Swagger JSON available in Prod, but hide UI
+    app.UseSwagger();
+}
+
+app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 

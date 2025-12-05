@@ -10,5 +10,6 @@ namespace Scs.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ModifiedAt { get; set; }
         public bool IsDeleted { get; set; } // Soft delete
+
     }
 }

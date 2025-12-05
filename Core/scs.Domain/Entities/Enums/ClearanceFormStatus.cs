@@ -9,7 +9,7 @@ namespace Scs.Domain.Entities.Enums
     public enum ClearanceFormStatus
     {
         Requested = 0,
-        InProgress = 1,
+        Pending = 1,
         Cleared = 2,
         Cancelled = 3
     }

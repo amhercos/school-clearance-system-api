@@ -10,7 +10,8 @@ namespace Scs.Infrastructure.Persistence
 {
     public class ScsDbContext : DbContext, IScsDbContext
     {
-        public DbSet<User> Users => Set<User>();
+        public ScsDbContext(DbContextOptions options) : base(options) { }
+        //public DbSet<User> Users => Set<User>();
 
         public DbSet<Student> Students => Set<Student>();
 

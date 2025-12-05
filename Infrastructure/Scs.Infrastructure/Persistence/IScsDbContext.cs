@@ -8,7 +8,8 @@ namespace Scs.Infrastructure.Persistence
 {
     public interface IScsDbContext
     {
-        DbSet<User> Users { get; }
+
+        //DbSet<User> Users { get; }
         DbSet<Student> Students { get; }
         DbSet<Faculty> Faculties { get; }
         DbSet<ClearanceForm> ClearanceForms { get; }
