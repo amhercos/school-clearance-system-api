@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Scs.DbMigration.PostgreSQL;
@@ -11,9 +12,11 @@ using Scs.DbMigration.PostgreSQL;
 namespace Scs.DbMigration.PostgreSQL.Migrations
 {
     [DbContext(typeof(PostgresScsDbContext))]
-    partial class PostgresScsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251206015438_IntegrateAspNetCoreIdentity")]
+    partial class IntegrateAspNetCoreIdentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

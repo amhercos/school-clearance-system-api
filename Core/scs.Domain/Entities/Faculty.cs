@@ -6,14 +6,9 @@ namespace Scs.Domain.Entities
 {
     public class Faculty : BaseEntity
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public Guid ApplicationUserId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public string EmployeeId { get; set; }
-
-        // Link to ASP.NET Identity User
-        public string UserId { get; set; }
-
-        // Foreign Key
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
     }

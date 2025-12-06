@@ -18,6 +18,10 @@ namespace Scs.Infrastructure.Persistence.Configurations
             .HasForeignKey(s => s.ClearanceFormId)
             .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasOne(s => s.Student)
+                .WithMany(c=>c.ClearanceForms)
+                .HasForeignKey(c=>c.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

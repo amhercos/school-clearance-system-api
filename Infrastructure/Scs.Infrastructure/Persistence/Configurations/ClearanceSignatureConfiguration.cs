@@ -14,7 +14,7 @@ namespace Scs.Infrastructure.Persistence.Configurations
             builder.HasKey(cs => cs.Id);
 
             builder.HasOne(cs => cs.Department)
-                .WithMany() // Assuming Department doesn't need a list of every signature ever
+                .WithMany()
                 .HasForeignKey(cs => cs.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
