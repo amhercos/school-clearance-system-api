@@ -48,12 +48,13 @@ namespace Scs.Infrastructure.Repositories
 
         public async Task<ClearanceForm?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-          return await _context.ClearanceForms
-                        .Include(cf => cf.ClearanceSignatures)
-                            .ThenInclude(cs => cs.Department)
-                        .Include(cf=> cf.ClearanceSignatures)
-                            .ThenInclude(cs => cs.SignedByFaculty)
-                        .FirstOrDefaultAsync(cf => cf.Id == id, cancellationToken);
+            return await _context.ClearanceForms
+                 .Include(cf => cf.ClearanceSignatures)
+                     .ThenInclude(cs => cs.Department)
+                 .Include(cf => cf.ClearanceSignatures)
+                     .ThenInclude(cs => cs.SignedByFaculty)
+                         .ThenInclude(f => f.ApplicationUser) 
+                 .FirstOrDefaultAsync(cf => cf.Id == id, cancellationToken);
         }
 
    
