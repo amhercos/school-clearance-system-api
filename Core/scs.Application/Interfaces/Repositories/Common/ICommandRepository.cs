@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Scs.Application.Interfaces.Repositories
+namespace Scs.Application.Interfaces.Repositories.Common
 {
     public interface ICommandRepository <T> where T : class
     {
@@ -11,7 +11,7 @@ namespace Scs.Application.Interfaces.Repositories
 
         Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 
-        void Update(T entity);
+        Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
 
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }

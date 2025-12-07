@@ -2,61 +2,36 @@
 using Scs.Application.Interfaces.Repositories;
 using Scs.Domain.Entities;
 using Scs.Infrastructure.Persistence;
+using Scs.Infrastructure.Repositories.Common;
 
 namespace Scs.Infrastructure.Repositories
 {
-    public class ClearanceFormRepository : IClearanceFormRepository
+    public class ClearanceFormRepository : Repository<ClearanceForm>, IClearanceFormRepository
     {
-        private readonly ScsDbContext _context;
-        public ClearanceFormRepository(ScsDbContext context)
-        {
-            _context = context;
-        }
 
-        public async Task AddAsync(ClearanceForm entity, CancellationToken cancellationToken = default)
+        public ClearanceFormRepository(ScsDbContext context) : base(context)
         {
-            await _context.ClearanceForms.AddAsync(entity, cancellationToken);
-        }
-
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-           await _context.ClearanceForms
-                        .Where(cf => cf.Id == id)
-                        .ExecuteDeleteAsync(cancellationToken);
-        }  
-        
-        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-           await _context.SaveChangesAsync(cancellationToken);
-        }
-
-        public void Update(ClearanceForm entity)
-        {
-            _context.ClearanceForms.Update(entity);
         }
 
 
-        // Read Operations
-        public async Task<IReadOnlyList<ClearanceForm>> GetAllAsync(CancellationToken cancellationToken = default)
+        public override async Task<IReadOnlyList<ClearanceForm>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-             var forms = await _context.ClearanceForms
+            var forms = await _dbContext.ClearanceForms
                         .AsNoTracking()
                         .Include(cf => cf.ClearanceSignatures)
                         .ToListAsync(cancellationToken);
             return forms;
         }
 
-        public async Task<ClearanceForm?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public override async Task<ClearanceForm?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _context.ClearanceForms
-                 .Include(cf => cf.ClearanceSignatures)
-                     .ThenInclude(cs => cs.Department)
-                 .Include(cf => cf.ClearanceSignatures)
-                     .ThenInclude(cs => cs.SignedByFaculty)
-                         .ThenInclude(f => f.ApplicationUser) 
-                 .FirstOrDefaultAsync(cf => cf.Id == id, cancellationToken);
+            return await _dbContext.ClearanceForms
+                     .Include(cf => cf.ClearanceSignatures)
+                         .ThenInclude(cs => cs.Department)
+                     .Include(cf => cf.ClearanceSignatures)
+                         .ThenInclude(cs => cs.SignedByFaculty)
+                             .ThenInclude(f => f.ApplicationUser)
+                     .FirstOrDefaultAsync(cf => cf.Id == id, cancellationToken);
         }
-
-   
     }
 }

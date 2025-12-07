@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Scs.Application.Interfaces.Repositories
+namespace Scs.Application.Interfaces.Repositories.Common
 {
     public interface IQueryRepository<T> where T : class
     {

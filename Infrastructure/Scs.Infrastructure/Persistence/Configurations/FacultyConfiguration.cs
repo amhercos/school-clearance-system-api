@@ -16,11 +16,20 @@ namespace Scs.Infrastructure.Persistence.Configurations
             builder.Property(f => f.EmployeeId)
                 .IsRequired()
                 .HasMaxLength(20);
-            
+
+           
+            builder.HasIndex(f => f.EmployeeId).IsUnique();
+
             builder.HasOne(f => f.Department)
                 .WithMany(d => d.Faculties)
                 .HasForeignKey(f => f.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne(f => f.ApplicationUser)
+                .WithOne()
+                .HasForeignKey<Faculty>(f => f.Id)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
