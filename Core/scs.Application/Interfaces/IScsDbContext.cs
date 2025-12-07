@@ -11,6 +11,10 @@ namespace Scs.Application.Interfaces
         DbSet<ClearanceSignature> ClearanceSignatures { get; }
         DbSet<Department> Departments { get; }
 
+        DbSet<ClearanceRule> ClearanceRules { get; }
+        DbSet<ClearanceSignatory> ClearanceSignatories { get; }
+
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

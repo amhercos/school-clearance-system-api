@@ -17,10 +17,19 @@ namespace Scs.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(d => d.DepartmentCode)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            builder.HasIndex(d => d.DepartmentCode)
+                .IsUnique();
+
             builder.HasMany(d => d.Faculties)
                 .WithOne(f => f.Department)
                 .HasForeignKey(f => f.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            
         }
     }
 }

@@ -290,6 +290,68 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                     b.ToTable("ClearanceForms");
                 });
 
+            modelBuilder.Entity("Scs.Domain.Entities.ClearanceRule", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("RequiredDepartmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("StudentDepartmentId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentDepartmentId");
+
+                    b.HasIndex("RequiredDepartmentId", "StudentDepartmentId")
+                        .IsUnique();
+
+                    b.ToTable("ClearanceRules");
+                });
+
+            modelBuilder.Entity("Scs.Domain.Entities.ClearanceSignatory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FacultyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId")
+                        .IsUnique();
+
+                    b.HasIndex("FacultyId");
+
+                    b.ToTable("ClearanceSignatories");
+                });
+
             modelBuilder.Entity("Scs.Domain.Entities.ClearanceSignature", b =>
                 {
                     b.Property<Guid>("Id")
@@ -325,11 +387,12 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClearanceFormId");
-
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("SignedByFacultyId");
+
+                    b.HasIndex("ClearanceFormId", "DepartmentId")
+                        .IsUnique();
 
                     b.ToTable("ClearanceSignatures");
                 });
@@ -343,9 +406,10 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
+                    b.Property<string>("DepartmentCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -360,13 +424,15 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DepartmentCode")
+                        .IsUnique();
+
                     b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("Scs.Domain.Entities.Faculty", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ApplicationUserId")
@@ -396,13 +462,15 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
                     b.HasIndex("DepartmentId");
 
+                    b.HasIndex("EmployeeId")
+                        .IsUnique();
+
                     b.ToTable("Faculties");
                 });
 
             modelBuilder.Entity("Scs.Domain.Entities.Student", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("ApplicationUserId")
@@ -413,6 +481,12 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("DepartmentId1")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -432,6 +506,10 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("DepartmentId1");
 
                     b.HasIndex("StudentNumber")
                         .IsUnique();
@@ -501,6 +579,39 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                     b.Navigation("Student");
                 });
 
+            modelBuilder.Entity("Scs.Domain.Entities.ClearanceRule", b =>
+                {
+                    b.HasOne("Scs.Domain.Entities.Department", "RequiredDepartment")
+                        .WithMany()
+                        .HasForeignKey("RequiredDepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Scs.Domain.Entities.Department", "StudentDepartment")
+                        .WithMany()
+                        .HasForeignKey("StudentDepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("RequiredDepartment");
+
+                    b.Navigation("StudentDepartment");
+                });
+
+            modelBuilder.Entity("Scs.Domain.Entities.ClearanceSignatory", b =>
+                {
+                    b.HasOne("Scs.Domain.Entities.Department", null)
+                        .WithOne("AssignedSignatory")
+                        .HasForeignKey("Scs.Domain.Entities.ClearanceSignatory", "DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Scs.Domain.Entities.Faculty", null)
+                        .WithMany()
+                        .HasForeignKey("FacultyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Scs.Domain.Entities.ClearanceSignature", b =>
                 {
                     b.HasOne("Scs.Domain.Entities.ClearanceForm", "ClearanceForm")
@@ -529,7 +640,7 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
             modelBuilder.Entity("Scs.Domain.Entities.Faculty", b =>
                 {
-                    b.HasOne("Scs.Domain.Entities.ApplicationUser", "ApplicationUser")
+                    b.HasOne("Scs.Domain.Entities.ApplicationUser", null)
                         .WithOne("FacultyProfile")
                         .HasForeignKey("Scs.Domain.Entities.Faculty", "ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -541,6 +652,12 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Scs.Domain.Entities.ApplicationUser", "ApplicationUser")
+                        .WithOne()
+                        .HasForeignKey("Scs.Domain.Entities.Faculty", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Department");
@@ -548,13 +665,31 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
             modelBuilder.Entity("Scs.Domain.Entities.Student", b =>
                 {
-                    b.HasOne("Scs.Domain.Entities.ApplicationUser", "ApplicationUser")
+                    b.HasOne("Scs.Domain.Entities.ApplicationUser", null)
                         .WithOne("StudentProfile")
                         .HasForeignKey("Scs.Domain.Entities.Student", "ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Scs.Domain.Entities.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Scs.Domain.Entities.Department", null)
+                        .WithMany("Students")
+                        .HasForeignKey("DepartmentId1");
+
+                    b.HasOne("Scs.Domain.Entities.ApplicationUser", "ApplicationUser")
+                        .WithOne()
+                        .HasForeignKey("Scs.Domain.Entities.Student", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("Department");
                 });
 
             modelBuilder.Entity("Scs.Domain.Entities.ApplicationUser", b =>
@@ -573,7 +708,11 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
             modelBuilder.Entity("Scs.Domain.Entities.Department", b =>
                 {
+                    b.Navigation("AssignedSignatory");
+
                     b.Navigation("Faculties");
+
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("Scs.Domain.Entities.Student", b =>

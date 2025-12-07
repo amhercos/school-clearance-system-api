@@ -22,10 +22,14 @@ namespace Scs.Infrastructure.Persistence
 
         public DbSet<Department> Departments => Set<Department>();
 
+        public DbSet<ClearanceRule> ClearanceRules => Set<ClearanceRule>();
+
+        public DbSet<ClearanceSignatory> ClearanceSignatories => Set<ClearanceSignatory>();
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // FOR ASPNET IDENTITY TABLES 
+            // ASPNET IDENTITY TABLES 
             // ApplicationUser => Student
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(u => u.StudentProfile)

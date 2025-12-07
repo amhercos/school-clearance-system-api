@@ -3,9 +3,9 @@ using Scs.Domain.Entities;
 
 namespace Scs.Application.Interfaces.Repositories
 {
-    public interface IClearanceFormRepository : 
-        ICommandRepository<ClearanceForm>, 
-        IQueryRepository<ClearanceForm>
+    public interface IClearanceRuleRepository :
+        ICommandRepository<ClearanceRule>, 
+        IQueryRepository<ClearanceRule>
     {
 
     }
