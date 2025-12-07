@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Scs.Application.DTOs;
 using Scs.Application.Features.ClearanceForms.Commands;
@@ -6,6 +7,7 @@ using Scs.Application.Features.ClearanceForms.Queries;
 
 namespace Scs.WebAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ClearanceFormsController : ControllerBase
