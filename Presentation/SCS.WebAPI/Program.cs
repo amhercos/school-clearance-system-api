@@ -1,14 +1,17 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
 using Scs.Application;
+using Scs.Application.Interfaces;
 using Scs.Infrastructure;
+using Scs.Infrastructure.Persistence;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // --- 1. Service Registration ---
 
 builder.Services.AddControllers();
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", policy =>
@@ -19,11 +22,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// A. Add Infrastructure (Database, Repos)
-// We pass configuration so Infrastructure can read the ConnectionString
 builder.Services.AddInfrastructureServices(builder.Configuration);
-
-// B. Add Application (MediatR, Validators, etc.)
 builder.Services.AddApplicationServices();
 
 // C. Swagger Config
@@ -34,14 +33,28 @@ builder.Services.AddSwaggerGen(c =>
         Title = "SCS Clearance System API",
         Version = "v1"
     });
+
+    c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme. Example: \"bearer {token}\"",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    c.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
 var app = builder.Build();
 
-// --- 2. Request Pipeline ---
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
+    await seeder.SeedAllAsync();
+}
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -50,16 +63,15 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    // Optional: Keep Swagger JSON available in Prod, but hide UI
     app.UseSwagger();
 }
 
 app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

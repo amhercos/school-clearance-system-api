@@ -3,7 +3,7 @@ using Scs.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using System.Reflection;
-using System.Text;
+using Scs.Application.Interfaces;
 
 namespace Scs.Infrastructure.Persistence
 {
@@ -25,14 +25,13 @@ namespace Scs.Infrastructure.Persistence
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
+            // FOR ASPNET IDENTITY TABLES 
             // ApplicationUser => Student
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(u => u.StudentProfile)
                 .WithOne(s => s.ApplicationUser)
                 .HasForeignKey<Student>(s => s.ApplicationUserId)
                 .OnDelete(DeleteBehavior.Cascade);
-
             // ApplicationUser => Faculty
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(u => u.FacultyProfile)
