@@ -19,16 +19,9 @@ namespace Scs.Infrastructure.Persistence.Configurations
 
            
             builder.HasIndex(f => f.EmployeeId).IsUnique();
+            builder.HasIndex(f => f.DepartmentId);
 
-            builder.HasOne(f => f.Department)
-                .WithMany(d => d.Faculties)
-                .HasForeignKey(f => f.DepartmentId)
-                .OnDelete(DeleteBehavior.Restrict);
 
-            builder.HasOne(f => f.ApplicationUser)
-                .WithOne()
-                .HasForeignKey<Faculty>(f => f.Id)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

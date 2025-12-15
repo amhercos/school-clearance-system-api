@@ -5,6 +5,7 @@ namespace Scs.Application.Interfaces
 {
     public interface IScsDbContext
     {
+        DbSet<ApplicationUser> Users { get; }
         DbSet<Student> Students { get; }
         DbSet<Faculty> Faculties { get; }
         DbSet<ClearanceForm> ClearanceForms { get; }

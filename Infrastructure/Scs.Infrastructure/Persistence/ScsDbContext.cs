@@ -10,7 +10,7 @@ namespace Scs.Infrastructure.Persistence
     public class ScsDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IScsDbContext
     {
         public ScsDbContext(DbContextOptions options) : base(options) { }
-    
+     
 
         public DbSet<Student> Students => Set<Student>();
 

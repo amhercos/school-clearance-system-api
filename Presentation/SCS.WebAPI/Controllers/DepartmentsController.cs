@@ -10,10 +10,10 @@ namespace SCS.WebAPI.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class DepartmentController : ControllerBase
+    public class DepartmentsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public DepartmentController(IMediator mediator)
+        public DepartmentsController(IMediator mediator)
         {
             _mediator = mediator;
         }

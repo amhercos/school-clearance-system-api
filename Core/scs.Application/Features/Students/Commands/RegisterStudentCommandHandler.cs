@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Scs.Application.Exceptions;
 using Scs.Application.Interfaces;
+using Scs.Application.Interfaces.Repositories;
 using Scs.Domain.Entities;
 using Scs.Domain.Entities.Enums;
 
@@ -10,57 +11,68 @@ namespace Scs.Application.Features.Students.Commands
     public class RegisterStudentCommandHandler : IRequestHandler<RegisterStudentCommand, Guid>
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IScsDbContext _context;
+        private readonly IStudentRepository _studentRepository;
 
         public RegisterStudentCommandHandler(
             UserManager<ApplicationUser> userManager,
-            IScsDbContext context)
+            IStudentRepository studentRepository)
         {
             _userManager = userManager;
-            _context = context;
+            _studentRepository = studentRepository;
         }
 
         public async Task<Guid> Handle(RegisterStudentCommand request, CancellationToken cancellationToken)
         {
-            // Create the ApplicationUser (Security Account)
-            var user = new ApplicationUser
+            ApplicationUser user = null;
+            try
             {
-                UserName = request.Email,
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                EmailConfirmed = true // Or false, depending on your flow
-            };
+                user = new ApplicationUser
 
-            var result = await _userManager.CreateAsync(user, request.Password);
+                {
+                    UserName = request.Email,
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    EmailConfirmed = true
+                };
 
-            if (!result.Succeeded)
-            {
-                throw new IdentityRegistrationException(result.Errors);
+                var result = await _userManager.CreateAsync(user, request.Password);
+                if (!result.Succeeded)
+                {
+                    throw new IdentityRegistrationException(result.Errors);
+                }
+
+
+                var studentProfile = new Student
+                {
+                    Id = user.Id,
+                    DepartmentId = request.DepartmentId,
+                    StudentNumber = request.StudentNumber,
+                    YearLevel = request.YearLevel,
+                    Course = request.Course
+                };
+
+                await _studentRepository.AddAsync(studentProfile, cancellationToken);
+                await _studentRepository.SaveChangesAsync(cancellationToken);
+
+                // Assign Role 
+                var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+                if (!roleResult.Succeeded)
+                {
+                    throw new IdentityRegistrationException(roleResult.Errors);
+                }
+
+                return user.Id;
             }
-
-            // Create the Student Profile (Domain Entity) 
-            var studentProfile = new Student
+            catch (IdentityRegistrationException)
             {
-                Id = user.Id,
-                DepartmentId = request.DepartmentId,
-                StudentNumber = request.StudentNumber,
-                YearLevel = request.YearLevel,
-                Course = request.Course
-            };
-
-            _context.Students.Add(studentProfile);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            // Optional: Assign the 'Student' role
-           var roleResult = await _userManager.AddToRoleAsync(user, "Student");
-            if (!roleResult.Succeeded)
-            {
-                // Throw an exception with details if role assignment fails
-                throw new IdentityRegistrationException(roleResult.Errors);
+                if (user != null && user.Id != Guid.Empty)
+                { 
+                    await _userManager.DeleteAsync(user);
+                }
+                throw;
             }
-
-            return user.Id;
         }
     }
-}
+
+}    
