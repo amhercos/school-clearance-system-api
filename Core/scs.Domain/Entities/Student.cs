@@ -4,7 +4,6 @@ namespace Scs.Domain.Entities
 {
     public class Student : BaseEntity
     {
-        public Guid ApplicationUserId { get; set; }
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
         public ApplicationUser ApplicationUser { get; set; }

@@ -18,13 +18,17 @@ namespace SCS.WebAPI.Controllers
             _mediator = mediator;
         }
 
+        
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Guid))]
         public async Task<IActionResult> Create(CreateDepartmentCommand command, CancellationToken cancellationToken)
         {
 
-            Guid newId = await _mediator.Send(command, cancellationToken);
-            return CreatedAtAction(nameof(GetById), new { id = newId }, newId);
+            DepartmentDto createdDto = await _mediator.Send(command, cancellationToken);
+            return CreatedAtAction(nameof(GetById), 
+                new { id = createdDto.Id },
+                createdDto);
         }
 
         [HttpGet("{id}")]

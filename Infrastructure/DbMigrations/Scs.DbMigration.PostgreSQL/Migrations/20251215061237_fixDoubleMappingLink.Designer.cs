@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Scs.DbMigration.PostgreSQL;
@@ -11,9 +12,11 @@ using Scs.DbMigration.PostgreSQL;
 namespace Scs.DbMigration.PostgreSQL.Migrations
 {
     [DbContext(typeof(PostgresScsDbContext))]
-    partial class PostgresScsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251215061237_fixDoubleMappingLink")]
+    partial class fixDoubleMappingLink
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,9 +181,6 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("FacultyProfileId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -221,7 +221,7 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
-                    b.Property<Guid?>("StudentProfileId")
+                    b.Property<Guid>("StudentProfileId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -232,8 +232,6 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("FacultyProfileId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -445,6 +443,9 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ApplicationUserId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -463,6 +464,9 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
 
                     b.HasIndex("DepartmentId");
 
@@ -568,15 +572,11 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
             modelBuilder.Entity("Scs.Domain.Entities.ApplicationUser", b =>
                 {
-                    b.HasOne("Scs.Domain.Entities.Faculty", "FacultyProfile")
-                        .WithMany()
-                        .HasForeignKey("FacultyProfileId");
-
                     b.HasOne("Scs.Domain.Entities.Student", "StudentProfile")
                         .WithMany()
-                        .HasForeignKey("StudentProfileId");
-
-                    b.Navigation("FacultyProfile");
+                        .HasForeignKey("StudentProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("StudentProfile");
                 });
@@ -653,6 +653,12 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
 
             modelBuilder.Entity("Scs.Domain.Entities.Faculty", b =>
                 {
+                    b.HasOne("Scs.Domain.Entities.ApplicationUser", null)
+                        .WithOne("FacultyProfile")
+                        .HasForeignKey("Scs.Domain.Entities.Faculty", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Scs.Domain.Entities.Department", "Department")
                         .WithMany("Faculties")
                         .HasForeignKey("DepartmentId")
@@ -691,6 +697,12 @@ namespace Scs.DbMigration.PostgreSQL.Migrations
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Department");
+                });
+
+            modelBuilder.Entity("Scs.Domain.Entities.ApplicationUser", b =>
+                {
+                    b.Navigation("FacultyProfile")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Scs.Domain.Entities.ClearanceForm", b =>

@@ -5,8 +5,8 @@ namespace Scs.Domain.Entities
     public class ApplicationUser : IdentityUser<Guid>
     {
         // navigation propeties
-        public Student StudentProfile { get; set; }
-        public Faculty FacultyProfile { get; set; }
+        public Student? StudentProfile { get; set; }
+        public Faculty? FacultyProfile { get; set; }
 
         // others
         public string FirstName { get; set; }

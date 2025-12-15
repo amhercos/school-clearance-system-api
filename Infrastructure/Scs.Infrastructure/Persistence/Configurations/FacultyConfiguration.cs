@@ -28,7 +28,6 @@ namespace Scs.Infrastructure.Persistence.Configurations
             builder.HasOne(f => f.ApplicationUser)
                 .WithOne()
                 .HasForeignKey<Faculty>(f => f.Id)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

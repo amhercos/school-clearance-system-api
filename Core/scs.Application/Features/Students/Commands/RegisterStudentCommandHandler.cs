@@ -42,7 +42,8 @@ namespace Scs.Application.Features.Students.Commands
             // Create the Student Profile (Domain Entity) 
             var studentProfile = new Student
             {
-                ApplicationUserId = user.Id,
+                Id = user.Id,
+                DepartmentId = request.DepartmentId,
                 StudentNumber = request.StudentNumber,
                 YearLevel = request.YearLevel,
                 Course = request.Course
@@ -52,7 +53,12 @@ namespace Scs.Application.Features.Students.Commands
             await _context.SaveChangesAsync(cancellationToken);
 
             // Optional: Assign the 'Student' role
-            await _userManager.AddToRoleAsync(user, "Student");
+           var roleResult = await _userManager.AddToRoleAsync(user, "Student");
+            if (!roleResult.Succeeded)
+            {
+                // Throw an exception with details if role assignment fails
+                throw new IdentityRegistrationException(roleResult.Errors);
+            }
 
             return user.Id;
         }

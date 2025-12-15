@@ -1,6 +1,4 @@
-﻿
-
-namespace Scs.Application.DTOs
+﻿namespace Scs.Application.DTOs
 {
     public class DepartmentDto
     {

@@ -33,10 +33,15 @@ namespace Scs.Application.Features.ClearanceForms.Commands
                 throw new UnauthorizedAccessException("User identity could not be retrieved from the authentication token.");
             }
 
-            var studentId = await _dbContext.Students
-                .Where(s => s.ApplicationUserId == applicationUserId)
-                .Select(s => s.Id)
-                .SingleOrDefaultAsync(cancellationToken);
+            var studentExists = await _dbContext.Students
+           .AnyAsync(s => s.Id == applicationUserId, cancellationToken);
+
+            if (!studentExists)
+            {
+                throw new InvalidOperationException("Authenticated user does not have a linked Student profile required to create a form.");
+            }
+
+            var studentId = applicationUserId;
 
             if (studentId == Guid.Empty)
             {
