@@ -34,13 +34,13 @@ namespace Scs.Infrastructure.Persistence
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(u => u.StudentProfile)
                 .WithOne(s => s.ApplicationUser)
-                .HasForeignKey<Student>(s => s.ApplicationUserId)
+                .HasForeignKey<Student>(s => s.Id)
                 .OnDelete(DeleteBehavior.Cascade);
             // ApplicationUser => Faculty
             modelBuilder.Entity<ApplicationUser>()
                 .HasOne(u => u.FacultyProfile)
                 .WithOne(f => f.ApplicationUser)
-                .HasForeignKey<Faculty>(f => f.ApplicationUserId)
+                .HasForeignKey<Faculty>(f => f.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

@@ -45,7 +45,7 @@ namespace Scs.Infrastructure.Persistence
         private async Task SeedAdminUserAsync(UserManager<ApplicationUser> userManager)
         {
             const string adminEmail = "admin@admin";
-            const string adminPassword = "admin";
+            const string adminPassword = "Admin";
 
             if (await _userManager.FindByEmailAsync(adminEmail) == null)
             {

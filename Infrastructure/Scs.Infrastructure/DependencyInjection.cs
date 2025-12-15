@@ -30,41 +30,16 @@ namespace Scs.Infrastructure
                 options.Password.RequireLowercase = true;
                 options.Password.RequireUppercase = true;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 6;
+                options.Password.RequiredLength = 5;
             })
                .AddEntityFrameworkStores<ScsDbContext>()
                 .AddDefaultTokenProviders();
 
-            // JWT 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                string secretString = configuration["JwtSettings:Key"] ?? throw new ArgumentNullException("JwtSettings:Key");
-                if (string.IsNullOrEmpty(secretString))
-                {
-                    throw new InvalidOperationException("JwtSettings:Key is empty or null after configuration load.");
-                }
-                var key = Encoding.UTF8.GetBytes(secretString);
-
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5),
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["JwtSettings:Issuer"],
-                    ValidAudience = configuration["JwtSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
-                };
-            });
-
 
             services.AddScoped<IClearanceFormRepository, ClearanceFormRepository>();
+            services.AddScoped<IClearanceRuleRepository, ClearanceRuleRepository>();
+            services.AddScoped<IClearanceSignatoryRepository, ClearanceSignatoryRepository>();
+            services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddScoped<IScsDbContext, ScsDbContext>();

@@ -26,7 +26,7 @@ namespace Scs.Application.Features.ClearanceForms.Queries
 
         public async Task<ClearanceFormDto> Handle(GetClearanceFormByIdQuery request, CancellationToken cancellationToken)
         {
-            // --- 1. SECURITY CHECK: Retrieve the Authenticated User's ID ---
+           
             var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (userIdClaim == null || !Guid.TryParse(userIdClaim, out Guid applicationUserId))
@@ -34,19 +34,23 @@ namespace Scs.Application.Features.ClearanceForms.Queries
                 throw new UnauthorizedAccessException("User identity could not be retrieved from the authentication token.");
             }
 
-            // --- 2. SECURITY CHECK: Get the StudentId linked to the authenticated user ---
-            // Assumes IScsDbContext exposes the 'Students' DbSet
-            var studentId = await _dbContext.Students
-                .Where(s => s.ApplicationUserId == applicationUserId)
-                .Select(s => s.Id)
-                .SingleOrDefaultAsync(cancellationToken);
+  
+            var studentExists = await _dbContext.Students
+           .AnyAsync(s => s.Id == applicationUserId, cancellationToken);
+
+            if (!studentExists)
+            {
+                throw new InvalidOperationException("Authenticated user does not have a linked Student profile required to create a form.");
+            }
+
+            var studentId = applicationUserId;
 
             if (studentId == Guid.Empty)
             {
                 throw new InvalidOperationException("Authenticated user is not linked to a student profile.");
             }
 
-            // --- 3. FETCH ENTITY ---
+       
             var entity = await _repository.GetByIdAsync(request.Id, cancellationToken);
 
             if (entity == null)
@@ -54,13 +58,13 @@ namespace Scs.Application.Features.ClearanceForms.Queries
                 return null;
             }
 
-            // --- 4. FINAL OWNERSHIP VERIFICATION ---
+     
             if (entity.StudentId != studentId)
             {
                 throw new UnauthorizedAccessException("You are not authorized to view this clearance form.");
             }
 
-            // --- 5. MAP TO DTO (Completed Logic) ---
+        
             var clearanceFormDto = new ClearanceFormDto
             {
                 Id = entity.Id,

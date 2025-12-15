@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Scs.Domain.Entities;
 using Scs.Domain.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,6 +24,7 @@ namespace Scs.Application.Features.Students.Commands
         public string StudentNumber { get; set; }
 
         public YearLevel YearLevel { get; set; }
+        public Guid DepartmentId { get; set; }
         public string Course { get; set; }
     }
 }

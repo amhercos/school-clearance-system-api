@@ -1,14 +1,12 @@
 ﻿using MediatR;
-using Scs.Application.Interfaces;
+using Scs.Application.DTOs;
 using Scs.Application.Interfaces.Repositories;
-using Scs.Domain.Entities; // Assuming your Department entity is here
-using System;
-using System.Threading;
-using System.Threading.Tasks;
+using Scs.Domain.Entities; 
+
 
 namespace Scs.Application.Features.Departments.Commands
 {
-    public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand, Guid>
+    public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand, DepartmentDto>
     {
         private readonly IDepartmentRepository _repository;
 
@@ -17,11 +15,11 @@ namespace Scs.Application.Features.Departments.Commands
             _repository = repository;
         }
 
-        public async Task<Guid> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
+        public async Task<DepartmentDto> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
             bool isCodeUnique = await _repository.IsDepartmentCodeUniqueAsync(request.DepartmentCode, cancellationToken);
 
-            if (!isCodeUnique)
+            if (isCodeUnique)
             {
                 throw new ArgumentException($"The department code '{request.DepartmentCode}' already exists.", nameof(request.DepartmentCode));
             }
@@ -33,10 +31,18 @@ namespace Scs.Application.Features.Departments.Commands
                 DepartmentCode = request.DepartmentCode,
             };
 
-         
+
             await _repository.AddAsync(department, cancellationToken);
             await _repository.SaveChangesAsync(cancellationToken);
-            return department.Id;
+            var departmentDto = new DepartmentDto
+            {
+                Id = department.Id,
+                Name = department.Name,
+                DepartmentCode = department.DepartmentCode,
+      
+            };
+
+            return departmentDto;
         }
     }
 }

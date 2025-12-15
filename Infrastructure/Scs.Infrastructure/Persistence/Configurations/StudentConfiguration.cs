@@ -29,7 +29,6 @@ namespace Scs.Infrastructure.Persistence.Configurations
             builder.HasOne(s => s.ApplicationUser)
                 .WithOne()
                 .HasForeignKey<Student>(s => s.Id)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             // 🔑 NECESSARY ADDITION: Many-to-One with Department (Student's Major)
