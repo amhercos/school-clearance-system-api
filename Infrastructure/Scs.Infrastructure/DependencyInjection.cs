@@ -40,6 +40,7 @@ namespace Scs.Infrastructure
             services.AddScoped<IClearanceRuleRepository, ClearanceRuleRepository>();
             services.AddScoped<IClearanceSignatoryRepository, ClearanceSignatoryRepository>();
             services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IDataSeeder, DataSeeder>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddScoped<IScsDbContext, ScsDbContext>();

@@ -29,7 +29,11 @@ namespace Scs.Infrastructure.Persistence.Configurations
                 .HasForeignKey(f => f.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            
+            builder.HasMany(d => d.Students)
+                .WithOne(s => s.Department)
+                .HasForeignKey(s => s.DepartmentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

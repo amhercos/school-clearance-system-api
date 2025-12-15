@@ -21,7 +21,8 @@ namespace Scs.Application.Features.Departments.Commands
 
             if (isCodeUnique)
             {
-                throw new ArgumentException($"The department code '{request.DepartmentCode}' already exists.", nameof(request.DepartmentCode));
+                throw new InvalidOperationException
+                    ($"The department code '{request.DepartmentCode}' already exists.");
             }
 
             var department = new Department
