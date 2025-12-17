@@ -8,6 +8,7 @@ using Scs.Application.Features.Students.Queries;
 
 namespace SCS.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase

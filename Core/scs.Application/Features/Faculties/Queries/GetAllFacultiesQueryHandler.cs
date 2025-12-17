@@ -1,0 +1,20 @@
+﻿using MediatR;
+using Scs.Application.DTOs;
+using Scs.Application.Interfaces.Repositories;
+
+namespace Scs.Application.Features.Faculties.Queries
+{
+    public class GetAllFacultiesQueryHandler : IRequestHandler<GetAllFacultiesQuery, IReadOnlyList<FacultyDto>>
+    {
+        private readonly IFacultyRepository _facultyRepository;
+
+        public GetAllFacultiesQueryHandler(IFacultyRepository facultyRepository)
+        {
+            _facultyRepository = facultyRepository;
+        }
+        public async Task<IReadOnlyList<FacultyDto>> Handle(GetAllFacultiesQuery request, CancellationToken cancellationToken)
+        {
+            return await _facultyRepository.GetAllFacultiesWithDetailsAsync(cancellationToken);
+        }
+    }
+}
