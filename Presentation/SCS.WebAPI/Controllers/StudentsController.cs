@@ -58,5 +58,16 @@ namespace SCS.WebAPI.Controllers
                 });
             }
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyList<StudentDetailsResponseDto>))]
+        public async Task<ActionResult<IReadOnlyList<StudentDetailsResponseDto>>> GetAllStudentsAsync(CancellationToken cancellationToken)
+        {
+            var query = new GetAllStudentsQuery();
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
     }
 }

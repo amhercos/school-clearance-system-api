@@ -1,4 +1,5 @@
-﻿using Scs.Application.Interfaces.Repositories.Common;
+﻿using Scs.Application.DTOs;
+using Scs.Application.Interfaces.Repositories.Common;
 using Scs.Domain.Entities;
 
 namespace Scs.Application.Interfaces.Repositories

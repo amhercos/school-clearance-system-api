@@ -14,7 +14,22 @@ namespace Scs.Application.Features.Faculties.Queries
         }
         public async Task<IReadOnlyList<FacultyDto>> Handle(GetAllFacultiesQuery request, CancellationToken cancellationToken)
         {
-            return await _facultyRepository.GetAllFacultiesWithDetailsAsync(cancellationToken);
+            return await _facultyRepository.GetMappedAsync(
+                selector: f => new FacultyDto
+                {
+                    Id = f.Id,
+                    EmployeeId = f.EmployeeId,
+                    FullName = f.ApplicationUser != null
+                                ? f.ApplicationUser.FirstName + " " + f.ApplicationUser.LastName
+                                : "No User Linked",
+                    Email = f.ApplicationUser != null ? f.ApplicationUser.Email : "N/A",
+                    DepartmentName = f.Department.Name ?? "Unassigned",
+                    DepartmentId = f.DepartmentId
+                },
+               //filter which rows
+                predicate: f => f.IsDeleted == false, 
+                cancellationToken: cancellationToken
+            );
         }
     }
 }

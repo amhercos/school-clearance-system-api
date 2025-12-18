@@ -13,14 +13,23 @@ namespace Scs.Application.Features.Faculties.Commands
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IFacultyRepository _facultyRepository;
+        private readonly IDepartmentRepository _departmentRepository;
 
-        public CreateFacultyCommandHandler(UserManager<ApplicationUser> userManager, IFacultyRepository facultyRepository)
+        public CreateFacultyCommandHandler(UserManager<ApplicationUser> userManager, 
+            IFacultyRepository facultyRepository
+            , IDepartmentRepository departmentRepository)
         {
             _userManager = userManager;
             _facultyRepository = facultyRepository;
+            _departmentRepository = departmentRepository;
         }
         public async Task<Guid> Handle(CreateFacultyCommand request, CancellationToken cancellationToken)
         {
+            var department = await _departmentRepository.GetByIdAsync(request.DepartmentId, cancellationToken);
+            if (department == null)
+            {
+                throw new Exception("Department not found.");
+            }
 
             ApplicationUser user = null;
             try

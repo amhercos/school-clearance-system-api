@@ -11,6 +11,6 @@ namespace Scs.Application.Interfaces.Repositories
         ICommandRepository<Faculty>, 
         IQueryRepository<Faculty>
     {
-        Task<IReadOnlyList<FacultyDto>> GetAllFacultiesWithDetailsAsync(CancellationToken cancellationToken = default);
+       
     }
 }

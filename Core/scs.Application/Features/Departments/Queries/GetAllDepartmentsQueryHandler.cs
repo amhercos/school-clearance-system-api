@@ -14,19 +14,23 @@ namespace Scs.Application.Features.Departments.Queries
         {
             _repository = repository;
         }
-        public async Task<IReadOnlyList<DepartmentDto>> Handle(GetAllDepartmentsQuery request, CancellationToken cancellationToken)
+          public async Task<IReadOnlyList<DepartmentDto>> Handle(GetAllDepartmentsQuery request, 
+             
+              CancellationToken cancellationToken)
         {
-           var entities = await _repository.GetAllAsync(cancellationToken);
-            var resultDtos = entities
-                .Select(d => new DepartmentDto
-                {
-                    Id = d.Id,
-                    Name = d.Name,
-                    DepartmentCode = d.DepartmentCode
-                })
-                .ToList();
+       
 
-            return resultDtos;
+            return await _repository.GetMappedAsync(d => new DepartmentDto
+            {
+                Id = d.Id,
+                Name = d.Name,
+                DepartmentCode = d.DepartmentCode
+            }, 
+
+                predicate : null
+            , cancellationToken);
         }
+
     }
 }
+

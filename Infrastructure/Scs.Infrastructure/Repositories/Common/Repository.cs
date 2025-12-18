@@ -2,6 +2,7 @@
 using Scs.Application.Interfaces.Repositories.Common;
 using Scs.Domain.Entities;
 using Scs.Infrastructure.Persistence;
+using System.Linq.Expressions;
 
 namespace Scs.Infrastructure.Repositories.Common
 {
@@ -49,6 +50,24 @@ namespace Scs.Infrastructure.Repositories.Common
         {
             return await _dbSet
                 .FindAsync(new object[] { id }, cancellationToken);
+        }
+
+        public async Task<IReadOnlyList<TResult>> GetMappedAsync<TResult>(
+            Expression<Func<T, TResult>> selector,
+            Expression<Func<T, bool>>? predicate = null,
+            CancellationToken cancellationToken = default)
+        {
+
+            IQueryable<T> query = _dbSet.AsNoTracking();
+
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
+            return await query
+            .Select(selector)
+            .ToListAsync(cancellationToken);
         }
     }
 }

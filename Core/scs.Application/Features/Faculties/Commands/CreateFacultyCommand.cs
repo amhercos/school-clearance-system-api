@@ -17,7 +17,7 @@ namespace Scs.Application.Features.Faculties.Commands
         public string LastName { get; set; }
         [Required]
         public string EmployeeId { get; set; }
-        public Guid? DepartmentId { get; set; }
+        public Guid DepartmentId { get; set; }
 
     }
 }

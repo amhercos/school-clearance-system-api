@@ -6,6 +6,7 @@ using Scs.Application;
 using Scs.Application.Interfaces;
 using Scs.Infrastructure;
 using Scs.Infrastructure.Persistence;
+//using SCS.WebAPI.Middleware;
 using Serilog;
 using System.Text;
 
@@ -87,7 +88,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+//builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+//builder.Services.AddProblemDetails();
+
 var app = builder.Build();
+
+//app.UseExceptionHandler();
 
 app.UseSerilogRequestLogging();
 

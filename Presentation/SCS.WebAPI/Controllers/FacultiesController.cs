@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Scs.Application.Features.Faculties.Queries;
@@ -28,8 +29,12 @@ namespace SCS.WebAPI.Controllers
         {
             var query = new GetAllFacultiesQuery();
             var result = await _mediator.Send(query, cancellationToken);
-           return Ok(result);
+            return Ok(result);
         }
+        
+        
+           //=> Ok(await _mediator.Send(new GetAllFacultiesQuery(), cancellationToken));
+        
     }
 }
 

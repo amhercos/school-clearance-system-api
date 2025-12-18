@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Scs.Application.DTOs;
 using Scs.Application.Interfaces;
 using Scs.Application.Interfaces.Repositories;
 using Scs.Application.Interfaces.Repositories.Common;
