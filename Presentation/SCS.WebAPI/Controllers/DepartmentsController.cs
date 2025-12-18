@@ -45,6 +45,7 @@ namespace SCS.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize (Roles ="Admin")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DepartmentDto>))]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
