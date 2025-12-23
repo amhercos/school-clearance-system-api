@@ -21,6 +21,8 @@ namespace Scs.Application.Features.ClearanceSignatories.Commands
 
         public async Task<Guid> Handle(AssignSignatoryCommand request, CancellationToken cancellationToken)
         {
+
+
             bool departmentExists = await _dbContext.Departments.AnyAsync(d => d.Id == request.DepartmentId, cancellationToken);
             if (!departmentExists)
             {

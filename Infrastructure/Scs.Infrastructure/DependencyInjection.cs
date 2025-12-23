@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Scs.Application.Interfaces;
@@ -21,8 +22,14 @@ namespace Scs.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<ScsDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSingleton<SoftDeleteInterceptor>();
+
+            services.AddDbContext<ScsDbContext>((sp, options) =>
+            {
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
+                       .AddInterceptors(sp.GetRequiredService<SoftDeleteInterceptor>());
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
