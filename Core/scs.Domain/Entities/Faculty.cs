@@ -8,7 +8,7 @@ namespace Scs.Domain.Entities
     {
         public ApplicationUser ApplicationUser { get; set; }
         public string EmployeeId { get; set; }
-        public Guid DepartmentId { get; set; }
+        public Guid? DepartmentId { get; set; }
         public Department Department { get; set; }
     }
 }

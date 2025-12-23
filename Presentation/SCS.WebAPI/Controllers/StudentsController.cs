@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Scs.Application.DTOs;
 using Scs.Application.Exceptions;
+using Scs.Application.Features.Students.Commands;
 using Scs.Application.Features.Students.Queries;
 
 namespace SCS.WebAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase
@@ -19,11 +21,6 @@ namespace SCS.WebAPI.Controllers
             _mediator = mediator;
         }
 
-        /// <summary>
-        /// Retrieves detailed information for a specific student.
-        /// </summary>
-        /// <param name="id">The unique ID of the student (which is the ApplicationUser Id).</param>
-        /// <returns>A detailed student profile DTO.</returns>
         [HttpGet("{id}")]
         [Authorize(Roles = "Admin,Faculty")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudentDetailsResponseDto))]
@@ -39,7 +36,7 @@ namespace SCS.WebAPI.Controllers
 
                 return Ok(result);
             }
-           
+
             catch (NotFoundException ex)
             {
                 return NotFound(new
@@ -56,6 +53,24 @@ namespace SCS.WebAPI.Controllers
                     Error = ex.Message
                 });
             }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyList<StudentDetailsResponseDto>))]
+        public async Task<ActionResult<IReadOnlyList<StudentDetailsResponseDto>>> GetAllStudentsAsync(CancellationToken cancellationToken)
+        {
+            var query = new GetAllStudentsQuery();
+            var result = await _mediator.Send(query, cancellationToken);
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _mediator.Send(new DeleteStudentCommand(id));
+            return NoContent();
         }
     }
 }

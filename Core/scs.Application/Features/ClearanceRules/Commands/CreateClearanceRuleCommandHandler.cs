@@ -20,6 +20,16 @@ namespace Scs.Application.Features.ClearanceRules.Commands
 
         public async Task<Guid> Handle(CreateClearanceRuleCommand request, CancellationToken cancellationToken)
         {
+            // Logic to prevent duplicate rules
+            bool ruleExists = await _dbContext.ClearanceRules.AnyAsync(r =>
+                r.RequiredDepartmentId == request.RequiredDepartmentId &&
+                r.StudentDepartmentId == request.AppliesToStudentDepartmentId &&
+                !r.IsDeleted, cancellationToken);
+
+            if (ruleExists)
+            {
+                throw new InvalidOperationException("This clearance rule already exists.");
+            }
             bool requiredDeptExists = await _dbContext.Departments.AnyAsync(d => d.Id == request.RequiredDepartmentId, cancellationToken);
             if (!requiredDeptExists)
             {

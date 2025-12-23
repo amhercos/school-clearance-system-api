@@ -24,5 +24,7 @@ namespace Scs.Infrastructure.Repositories
              .Include(s => s.ApplicationUser)
              .SingleOrDefaultAsync(s => s.Id == studentId, cancellationToken);
         }
+
+
     }
 }

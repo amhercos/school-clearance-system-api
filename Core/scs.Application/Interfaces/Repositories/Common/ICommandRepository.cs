@@ -9,7 +9,9 @@ namespace Scs.Application.Interfaces.Repositories.Common
         
         Task AddAsync(T entity, CancellationToken cancellationToken = default);
 
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<bool> DeleteAsync(Guid Id, CancellationToken cancellationToken = default);
+
+        Task DeleteAsync(T entity, CancellationToken cancellationToken = default);
 
         Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
 

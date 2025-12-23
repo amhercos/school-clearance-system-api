@@ -18,7 +18,6 @@ namespace SCS.WebAPI.Controllers
             _mediator = mediator;
         }
 
-        
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Guid))]
@@ -42,6 +41,16 @@ namespace SCS.WebAPI.Controllers
             {
                 return NotFound();
             }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Authorize (Roles ="Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<DepartmentDto>))]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+        {
+            var query = new GetAllDepartmentsQuery();
+            var result = await _mediator.Send(query, cancellationToken);
             return Ok(result);
         }
 
