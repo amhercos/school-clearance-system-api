@@ -55,5 +55,12 @@ namespace SCS.WebAPI.Controllers
         }
 
 
+        [HttpDelete]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Delete(Guid Id)
+        {
+            await _mediator.Send(new DeleteDepartmentCommand(Id));
+            return NoContent();
+        }
     }
 }

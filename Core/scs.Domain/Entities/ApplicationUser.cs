@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Scs.Domain.Entities.Common;
 
 namespace Scs.Domain.Entities
 {
-    public class ApplicationUser : IdentityUser<Guid>
+    public class ApplicationUser : IdentityUser<Guid>, ISoftDelete
     {
         // navigation propeties
         public Student? StudentProfile { get; set; }
@@ -17,5 +18,7 @@ namespace Scs.Domain.Entities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? ModifiedAt { get; set; }
         public Guid? CreatedBy { get; set; }
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedOnUtc { get; set; }
     }
 }

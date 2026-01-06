@@ -6,7 +6,7 @@ using Scs.Application;
 using Scs.Application.Interfaces;
 using Scs.Infrastructure;
 using Scs.Infrastructure.Persistence;
-//using SCS.WebAPI.Middleware;
+using SCS.WebAPI.Middleware;
 using Serilog;
 using System.Text;
 
@@ -88,14 +88,12 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-//builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-//builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-//app.UseExceptionHandler();
 
-app.UseSerilogRequestLogging();
 
 // Database Seeding
 using (var scope = app.Services.CreateScope())
@@ -107,7 +105,7 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
+    //app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
@@ -119,14 +117,13 @@ else
     app.UseSwagger();
 }
 
+app.UseExceptionHandler();
+app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 app.UseRouting();
-
 app.UseCors("CorsPolicy");
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 try

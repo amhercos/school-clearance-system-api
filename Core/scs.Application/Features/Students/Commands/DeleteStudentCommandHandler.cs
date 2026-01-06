@@ -11,7 +11,6 @@ public class DeleteStudentCommandHandler(IStudentRepository studentRepository)
     public async Task Handle(DeleteStudentCommand request, CancellationToken cancellationToken)
     {
         var student = await studentRepository.GetByIdAsync(request.Id, cancellationToken);
-
         if (student is null)
             throw new NotFoundException(nameof(Student), request.Id);
 

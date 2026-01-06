@@ -24,7 +24,7 @@ namespace Scs.Application.Features.Students.Queries
         public async Task<StudentDetailsResponseDto> Handle(GetStudentDetailsQuery query, CancellationToken cancellationToken)
         {
             var result = await _studentRepository.GetStudentDetailsAsync(query.StudentId, cancellationToken);
-            if (result == null) throw new NotFoundException(nameof(Student), query.StudentId);
+            if (result == null) throw new NotFoundException(nameof(Student), query.StudentId);  
             if (result.ApplicationUser == null)
                 throw new InvalidOperationException($"Student profile {query.StudentId} exists but its linked ApplicationUser is null.");
 

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Scs.Application.DTOs;
 using Scs.Application.Exceptions;
@@ -28,31 +27,10 @@ namespace SCS.WebAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetStudentDetailsAsync(Guid id)
         {
-            try
-            {
-                var query = new GetStudentDetailsQuery { StudentId = id };
-
-                var result = await _mediator.Send(query);
-
-                return Ok(result);
-            }
-
-            catch (NotFoundException ex)
-            {
-                return NotFound(new
-                {
-                    Message = ex.Message,
-                    Details = $"No student profile found with ID: {id}"
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    Message = "An unexpected error occurred while fetching the student details.",
-                    Error = ex.Message
-                });
-            }
+       
+            var quert = new GetStudentDetailsQuery { StudentId = id };
+            var result = await _mediator.Send(quert);
+            return Ok(result);
         }
 
         [HttpGet]

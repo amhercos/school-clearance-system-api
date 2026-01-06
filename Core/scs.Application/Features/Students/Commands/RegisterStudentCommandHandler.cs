@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Scs.Application.Exceptions;
 using Scs.Application.Interfaces;
 using Scs.Application.Interfaces.Repositories;
+using Scs.Application.Interfaces.Services;
 using Scs.Domain.Entities;
 using Scs.Domain.Entities.Enums;
 
@@ -10,66 +11,55 @@ namespace Scs.Application.Features.Students.Commands
 {
     public class RegisterStudentCommandHandler : IRequestHandler<RegisterStudentCommand, Guid>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IIdentityService _identityService;
         private readonly IStudentRepository _studentRepository;
+        private readonly IDepartmentRepository _departmentRepository;
 
         public RegisterStudentCommandHandler(
-            UserManager<ApplicationUser> userManager,
-            IStudentRepository studentRepository)
+            IIdentityService identityService,
+            IStudentRepository studentRepository,
+            IDepartmentRepository departmentRepository)
         {
-            _userManager = userManager;
+            _identityService = identityService;
             _studentRepository = studentRepository;
+            _departmentRepository = departmentRepository;
         }
 
         public async Task<Guid> Handle(RegisterStudentCommand request, CancellationToken cancellationToken)
         {
-            ApplicationUser user = null;
+            var department = await _departmentRepository.GetByIdAsync(request.DepartmentId, cancellationToken);
+            if (department == null)
+            {
+                throw new NotFoundException(nameof(Department), request.DepartmentId);
+            }
+
+            var userId = await _identityService.CreateUserAsync(
+               request.Email,
+               request.FirstName,
+               request.LastName,
+               request.Password,
+               "Student",
+               cancellationToken);
+
             try
             {
-                user = new ApplicationUser
-
+                var student = new Student
                 {
-                    UserName = request.Email,
-                    Email = request.Email,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    EmailConfirmed = true
-                };
-
-                var result = await _userManager.CreateAsync(user, request.Password);
-                if (!result.Succeeded)
-                {
-                    throw new IdentityRegistrationException(result.Errors);
-                }
-
-
-                var studentProfile = new Student
-                {
-                    Id = user.Id,
-                    DepartmentId = request.DepartmentId,
+                    Id = userId,
                     StudentNumber = request.StudentNumber,
+                    DepartmentId = request.DepartmentId,
                     YearLevel = request.YearLevel,
                     Course = request.Course
                 };
-
-                await _studentRepository.AddAsync(studentProfile, cancellationToken);
+                await _studentRepository.AddAsync(student, cancellationToken);
                 await _studentRepository.SaveChangesAsync(cancellationToken);
-
-                // Assign Role 
-                var roleResult = await _userManager.AddToRoleAsync(user, "Student");
-                if (!roleResult.Succeeded)
-                {
-                    throw new IdentityRegistrationException(roleResult.Errors);
-                }
-
-                return user.Id;
+                return userId;
             }
-            catch (IdentityRegistrationException)
+
+            catch
             {
-                if (user != null && user.Id != Guid.Empty)
-                { 
-                    await _userManager.DeleteAsync(user);
-                }
+                // Rollback user creation if faculty profile fails
+                await _identityService.DeleteUserAsync(userId);
                 throw;
             }
         }
