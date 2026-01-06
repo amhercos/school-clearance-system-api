@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Scs.Application.Exceptions;
 using Scs.Application.Interfaces.Repositories;
+using Scs.Application.Interfaces.Services;
 using Scs.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -11,15 +12,16 @@ namespace Scs.Application.Features.Faculties.Commands
 {
     public class CreateFacultyCommandHandler : IRequestHandler<CreateFacultyCommand, Guid>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IIdentityService _identityService;
         private readonly IFacultyRepository _facultyRepository;
         private readonly IDepartmentRepository _departmentRepository;
 
-        public CreateFacultyCommandHandler(UserManager<ApplicationUser> userManager, 
+        public CreateFacultyCommandHandler(
+            IIdentityService identityService,
             IFacultyRepository facultyRepository
             , IDepartmentRepository departmentRepository)
         {
-            _userManager = userManager;
+            _identityService = identityService;
             _facultyRepository = facultyRepository;
             _departmentRepository = departmentRepository;
         }
@@ -28,53 +30,34 @@ namespace Scs.Application.Features.Faculties.Commands
             var department = await _departmentRepository.GetByIdAsync(request.DepartmentId, cancellationToken);
             if (department == null)
             {
-                throw new Exception("Department not found.");
+                throw new NotFoundException(nameof(Department), request.DepartmentId);
             }
 
-            ApplicationUser user = null;
+           var userId = await _identityService.CreateUserAsync(
+               request.Email, 
+               request.FirstName, 
+               request.LastName,
+               request.Password,
+               "Faculty", 
+               cancellationToken);
+
             try
             {
-                user = new ApplicationUser
-
+                var faculty = new Faculty
                 {
-                    UserName = request.Email,
-                    Email = request.Email,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    EmailConfirmed = true
-                };
-
-                var result = await _userManager.CreateAsync(user, request.Password);
-                if (!result.Succeeded)
-                {
-                    throw new IdentityRegistrationException(result.Errors);
-                }
-
-                var facultyProfile = new Faculty
-                {
-                    Id = user.Id,
+                    Id = userId,
                     EmployeeId = request.EmployeeId,
                     DepartmentId = request.DepartmentId
                 };
-
-                await _facultyRepository.AddAsync(facultyProfile, cancellationToken);
+                await _facultyRepository.AddAsync(faculty, cancellationToken);
                 await _facultyRepository.SaveChangesAsync(cancellationToken);
+                return userId;
+            }
 
-                // Assign Role 
-                var roleResult = await _userManager.AddToRoleAsync(user, "Faculty");
-                if (!roleResult.Succeeded)
-                {
-                    throw new IdentityRegistrationException(roleResult.Errors);
-                }
-
-                return user.Id;
-                }
-                catch (IdentityRegistrationException)
-                {
-                if (user != null && user.Id != Guid.Empty)
-                {
-                    await _userManager.DeleteAsync(user);
-                }
+            catch
+            {
+                // Rollback user creation if faculty profile fails
+                await _identityService.DeleteUserAsync(userId);
                 throw;
             }
         }

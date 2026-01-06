@@ -20,6 +20,7 @@ namespace Scs.Application.Features.Students.Queries
             return await _studentRepository.GetMappedAsync(
                 selector: s => new StudentDetailsResponseDto
                 {
+                    Id = s.Id,
                     FullName = s.ApplicationUser != null ? $"{s.ApplicationUser.FirstName} {s.ApplicationUser.LastName}" : string.Empty,
                     Email = s.ApplicationUser != null ? s.ApplicationUser.Email : string.Empty,
                     StudentNumber = s.StudentNumber,

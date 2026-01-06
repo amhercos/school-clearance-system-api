@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Scs.Application.Interfaces;
 using Scs.Application.Interfaces.Repositories;
+using Scs.Application.Interfaces.Services;
 using Scs.Domain.Entities;
 using Scs.Infrastructure.Persistence;
 using Scs.Infrastructure.Repositories;
@@ -50,6 +51,7 @@ namespace Scs.Infrastructure
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IFacultyRepository, FacultyRepository>();
             services.AddScoped<IDataSeeder, DataSeeder>();
+            services.AddScoped<IIdentityService, IdentityService>();
             services.AddTransient<IJwtService, JwtService>();
             services.AddScoped<IScsDbContext, ScsDbContext>();
 
